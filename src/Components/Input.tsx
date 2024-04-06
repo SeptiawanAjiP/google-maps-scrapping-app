@@ -1,7 +1,5 @@
 
-import React, { useState } from "react";
-const { ipcRenderer } = window.require('electron');
-
+import React, { useState, useEffect  } from "react";
 
 export default function Input() {
     const [name, setName] = useState("");
@@ -9,8 +7,9 @@ export default function Input() {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         alert(`The name you entered was: ${name}`);
-        ipcRenderer.send('start-scraping');
-       
+        window.ipcRenderer.send('start-scraping', name);
+        // ipcRenderer.send("run-scraping", name);
+        // await runScraping()
     }
     return (
       <form className="max-w-xl w-full" onSubmit={handleSubmit}>

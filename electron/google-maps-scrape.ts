@@ -2,12 +2,10 @@ import * as cheerio from "cheerio";
 import puppeteerExtra from "puppeteer-extra";
 import stealthPlugin from "puppeteer-extra-plugin-stealth";
 
-export default async function searchGoogleMaps() {
-  console.log(">>>", "SEARCHING");
+export default async function searchGoogleMaps(name: string) {
   try {
-    const start: number = Date.now();
 
-    // puppeteerExtra.use(stealthPlugin());
+    puppeteerExtra.use(stealthPlugin());
 
     const browser = await puppeteerExtra.launch({
       headless: false,
@@ -18,7 +16,7 @@ export default async function searchGoogleMaps() {
 
     const page = await browser.newPage();
 
-    const query: string = "Toko Kopi Purwokerto";
+    const query: string = name;
 
     try {
       await page.goto(
@@ -28,40 +26,7 @@ export default async function searchGoogleMaps() {
       console.log("error going to page");
     }
 
-    async function autoScroll(page: any): Promise<void> {
-      await page.evaluate(async () => {
-        const wrapper: any = document.querySelector('div[role="feed"]');
-
-        await new Promise((resolve, reject) => {
-          var totalHeight: number = 0;
-          var distance: number = 1000;
-          var scrollDelay: number = 3000;
-
-          var timer = setInterval(async () => {
-            var scrollHeightBefore: number = wrapper.scrollHeight;
-            wrapper.scrollBy(0, distance);
-            totalHeight += distance;
-
-            if (totalHeight >= scrollHeightBefore) {
-              totalHeight = 0;
-              await new Promise((resolve) => setTimeout(resolve, scrollDelay));
-
-              // Calculate scrollHeight after waiting
-              var scrollHeightAfter: number = wrapper.scrollHeight;
-
-              if (scrollHeightAfter > scrollHeightBefore) {
-                // More content loaded, keep scrolling
-                return;
-              } else {
-                // No more content loaded, stop scrolling
-                clearInterval(timer);
-                // resolve();
-              }
-            }
-          }, 700);
-        });
-      });
-    }
+   
 
     await autoScroll(page);
 
@@ -137,11 +102,45 @@ export default async function searchGoogleMaps() {
     });
     const end: number = Date.now();
 
-    console.log(`time in seconds ${Math.floor((end - start) / 1000)}`);
+    console.log(`AUFAR`, buisnesses);
 
     return buisnesses;
   } catch (error) {
-    console.log('>>>', error)
-    return [];
+    console.log('error google maps', error)
   }
+}
+
+async function autoScroll(page: any): Promise<void> {
+  await page.evaluate(async () => {
+    const wrapper: any = document.querySelector('div[role="feed"]');
+
+    await new Promise((resolve, reject) => {
+      var totalHeight: number = 0;
+      var distance: number = 1000;
+      var scrollDelay: number = 3000;
+
+      var timer = setInterval(async () => {
+        var scrollHeightBefore: number = wrapper.scrollHeight;
+        wrapper.scrollBy(0, distance);
+        totalHeight += distance;
+
+        if (totalHeight >= scrollHeightBefore) {
+          totalHeight = 0;
+          await new Promise((resolve) => setTimeout(resolve, scrollDelay));
+
+          // Calculate scrollHeight after waiting
+          var scrollHeightAfter: number = wrapper.scrollHeight;
+
+          if (scrollHeightAfter > scrollHeightBefore) {
+            // More content loaded, keep scrolling
+            return;
+          } else {
+            // No more content loaded, stop scrolling
+            clearInterval(timer);
+            // resolve();
+          }
+        }
+      }, 700);
+    });
+  });
 }
