@@ -2,7 +2,20 @@ import * as cheerio from "cheerio";
 import puppeteerExtra from "puppeteer-extra";
 import stealthPlugin from "puppeteer-extra-plugin-stealth";
 
-export default async function searchGoogleMaps(name: string) {
+
+interface Business {
+  index: number;
+  storeName: string;
+  placeId: string;
+  address: string;
+  category: string;
+  phone?: string;
+  googleUrl: string;
+  bizWebsite?: string;
+  stars: number | null;
+  numberOfReviews: number | null;
+}
+export default async function searchGoogleMaps(query: string): Promise<any[]> {
   try {
 
     puppeteerExtra.use(stealthPlugin());
@@ -16,8 +29,6 @@ export default async function searchGoogleMaps(name: string) {
 
     const page = await browser.newPage();
 
-    const query: string = name;
-
     try {
       await page.goto(
         `https://www.google.com/maps/search/${query.split(" ").join("+")}`
@@ -26,7 +37,40 @@ export default async function searchGoogleMaps(name: string) {
       console.log("error going to page");
     }
 
-   
+    async function autoScroll(page: any): Promise<void> {
+      await page.evaluate(async () => {
+        const wrapper: any = document.querySelector('div[role="feed"]');
+
+        await new Promise((resolve, reject) => {
+          let totalHeight: number = 0;
+          let distance: number = 1000;
+          const scrollDelay: number = 3000;
+
+          const timer = setInterval(async () => {
+            const scrollHeightBefore: number = wrapper.scrollHeight;
+            wrapper.scrollBy(0, distance);
+            totalHeight += distance;
+
+            if (totalHeight >= scrollHeightBefore) {
+              totalHeight = 0;
+              await new Promise((resolve) => setTimeout(resolve, scrollDelay));
+
+              // Calculate scrollHeight after waiting
+              const scrollHeightAfter: number = wrapper.scrollHeight;
+
+              if (scrollHeightAfter > scrollHeightBefore) {
+                // More content loaded, keep scrolling
+                return;
+              } else {
+                // No more content loaded, stop scrolling
+                clearInterval(timer);
+                resolve();
+              }
+            }
+          }, 700);
+        });
+      });
+    }
 
     await autoScroll(page);
 
@@ -38,7 +82,7 @@ export default async function searchGoogleMaps(name: string) {
     console.log("browser closed");
 
     // get all a tag parent where a tag href includes /maps/place/
-    const $: any = cheerio.load(html);
+    const $ = cheerio.load(html);
     const aTags: any = $("a");
     const parents: any[] = [];
     aTags.each((i: number, el: any) => {
@@ -69,6 +113,8 @@ export default async function searchGoogleMaps(name: string) {
         .find("span.fontBodyMedium > span")
         .attr("aria-label");
 
+      const { stars, numberOfReviews } = extractRatingAndReviews(ratingText);
+
       // get the first div that includes the class fontBodyMedium
       const bodyDiv: any = parent.find("div.fontBodyMedium").first();
       const children: any = bodyDiv.children();
@@ -76,7 +122,7 @@ export default async function searchGoogleMaps(name: string) {
       const firstOfLast: any = lastChild.children().first();
       const lastOfLast: any = lastChild.children().last();
       index = index + 1;
-
+      
       buisnesses.push({
         index,
         storeName,
@@ -86,61 +132,39 @@ export default async function searchGoogleMaps(name: string) {
         phone: lastOfLast?.text()?.split("·")?.[1]?.trim(),
         googleUrl: url,
         bizWebsite: website,
-        ratingText,
-        stars: ratingText?.split("Bintang")?.[0]?.trim()
-          ? Number(ratingText?.split("Bintang")?.[0]?.trim())
-          : null,
-        numberOfReviews: ratingText
-          ?.split("Bintang")?.[1]
-          ?.replace("Ulasan", "")
-          ?.trim()
-          ? Number(
-              ratingText?.split("Bintang")?.[1]?.replace("Ulasan", "")?.trim()
-            )
-          : null,
+        stars,
+        numberOfReviews,
       });
+      console.log('>>>', buisnesses);
     });
-    const end: number = Date.now();
-
-    console.log(`AUFAR`, buisnesses);
+    buisnesses.sort((a, b) => {
+      if (a.stars && b.stars) {
+        return b.stars - a.stars;
+      } else {
+        return 0;
+      }
+    });
 
     return buisnesses;
   } catch (error) {
-    console.log('error google maps', error)
+    console.log("error at googleMaps", error);
+    return [];
   }
 }
 
-async function autoScroll(page: any): Promise<void> {
-  await page.evaluate(async () => {
-    const wrapper: any = document.querySelector('div[role="feed"]');
+function extractRatingAndReviews(ratingText: string | undefined): { stars: number | null; numberOfReviews: number | null } {
+  if (!ratingText) {
+    return { stars: null, numberOfReviews: null };
+  }
 
-    await new Promise((resolve, reject) => {
-      var totalHeight: number = 0;
-      var distance: number = 1000;
-      var scrollDelay: number = 3000;
+  const regex = /Bintang (\d+(?:,\d+)?) (\d+) Ulasan/;
+  const match = ratingText.match(regex);
 
-      var timer = setInterval(async () => {
-        var scrollHeightBefore: number = wrapper.scrollHeight;
-        wrapper.scrollBy(0, distance);
-        totalHeight += distance;
-
-        if (totalHeight >= scrollHeightBefore) {
-          totalHeight = 0;
-          await new Promise((resolve) => setTimeout(resolve, scrollDelay));
-
-          // Calculate scrollHeight after waiting
-          var scrollHeightAfter: number = wrapper.scrollHeight;
-
-          if (scrollHeightAfter > scrollHeightBefore) {
-            // More content loaded, keep scrolling
-            return;
-          } else {
-            // No more content loaded, stop scrolling
-            clearInterval(timer);
-            // resolve();
-          }
-        }
-      }, 700);
-    });
-  });
+  if (match) {
+    const stars = parseFloat(match[1].replace(",", "."));
+    const numberOfReviews = parseInt(match[2]);
+    return { stars, numberOfReviews };
+  } else {
+    return { stars: null, numberOfReviews: null };
+  }
 }

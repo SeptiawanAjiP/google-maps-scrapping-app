@@ -28,11 +28,10 @@ async function createWindow() {
   if (VITE_DEV_SERVER_URL) {
     window.loadURL(VITE_DEV_SERVER_URL);
   } else {
-    // win.loadFile('dist/index.html')
     window.loadFile(path.join(process.env.DIST, "index.html"));
   }
 
-  window.webContents.openDevTools();
+  // window.webContents.openDevTools();
 }
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
@@ -54,8 +53,6 @@ app.whenReady().then(createWindow);
 ipcMain.on("start-scraping", async (event, arg) => {
   try {
     const results = await searchGoogleMaps(arg);
-    console.log('IPCMAIN',results)
-
     event.reply("scraping-done", results);
   } catch (error) {
     event.reply("scraping-error", error);

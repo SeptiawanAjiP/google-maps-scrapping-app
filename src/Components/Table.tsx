@@ -46,23 +46,22 @@ const Table: React.FC<TableProps> = ({ places }) => {
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
+                  Rating
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Ulasan
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   Alamat
                 </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Link
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Rating & Ulasan
-                </th>
-                <th scope="col" className="relative px-6 py-3">
-                  <span className="sr-only">Edit</span>
-                </th>
+               
+               
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -73,21 +72,23 @@ const Table: React.FC<TableProps> = ({ places }) => {
                     <div className="text-sm text-gray-900">{index + 1}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{item.storeName}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{item.address}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
                     <a href={item.googleUrl} target="_blank" rel="noreferrer">
                       <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                        Ke Lokasi
+                        {item.storeName}
                       </span>
                     </a>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{item.ratingText}</div>
+                    <div className="text-sm text-gray-900">🌟 {item.stars} </div>
                   </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">{item.numberOfReviews} ulasan</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">{item.address}</div>
+                  </td>
+                 
+                 
                 </tr>
               ))}
             </tbody>
