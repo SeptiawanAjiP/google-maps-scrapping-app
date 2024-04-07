@@ -1,6 +1,7 @@
 # Google Maps Scraping Desktop App
 
 This is a desktop application built for scraping data from Google Maps. It is developed using Electron, React JS, Puppeteer, and Vite.
+![image](https://raw.githubusercontent.com/SeptiawanAjiP/google-maps-scrapping-app/master/image.jpeg)
 
 ## Installation
 
