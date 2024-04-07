@@ -1,30 +1,40 @@
-# React + TypeScript + Vite
+# Google Maps Scraping Desktop App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a desktop application built for scraping data from Google Maps. It is developed using Electron, React JS, Puppeteer, and Vite.
 
-Currently, two official plugins are available:
+## Installation
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Follow these steps to install the application:
 
-## Expanding the ESLint configuration
+1. Clone the repository:
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+    ```bash
+    https://github.com/SeptiawanAjiP/google-maps-scrapping-app
+    ```
 
-- Configure the top-level `parserOptions` property like this:
+2. Navigate to the project directory:
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+    ```bash
+    cd your-project
+    ```
+
+3. Install dependencies:
+
+    ```bash
+    npm install
+    ```
+
+## Usage
+After installing the dependencies, you can run the application using the following command:
+   ```bash
+    npm run dev
 ```
+## How to Use
+1. Once the application is launched, enter the desired search query in the input field.
+2. Press the "Search" button to initiate the scraping process.
+3. Wait for the scraping to complete. The results will be displayed in a table format.
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## Important Note
+Use responsibly and be mindful of Google's terms of service regarding web scraping.
+## To-Do List
+soon ...
