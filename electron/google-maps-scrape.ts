@@ -97,7 +97,7 @@ export default async function searchGoogleMaps(query: string): Promise<any[]> {
 
     console.log("parents", parents.length);
 
-    const buisnesses: any[] = [];
+    const business: any[] = [];
     let index: number = 0;
 
     parents.forEach((parent: any) => {
@@ -123,7 +123,7 @@ export default async function searchGoogleMaps(query: string): Promise<any[]> {
       const lastOfLast: any = lastChild.children().last();
       index = index + 1;
       
-      buisnesses.push({
+      business.push({
         index,
         storeName,
         placeId: `ChI${url?.split("?")?.[0]?.split("ChI")?.[1]}`,
@@ -135,9 +135,9 @@ export default async function searchGoogleMaps(query: string): Promise<any[]> {
         stars,
         numberOfReviews,
       });
-      console.log('>>>', buisnesses);
+      console.log('>>>', business);
     });
-    buisnesses.sort((a, b) => {
+    business.sort((a, b) => {
       if (a.stars && b.stars) {
         return b.stars - a.stars;
       } else {
@@ -145,7 +145,7 @@ export default async function searchGoogleMaps(query: string): Promise<any[]> {
       }
     });
 
-    return buisnesses;
+    return business;
   } catch (error) {
     console.log("error at googleMaps", error);
     return [];

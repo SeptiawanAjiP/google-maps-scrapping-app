@@ -58,6 +58,12 @@ const Table: React.FC<TableProps> = ({ places }) => {
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                 >
+                  No. Telp
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   Alamat
                 </th>
                
@@ -68,12 +74,12 @@ const Table: React.FC<TableProps> = ({ places }) => {
               
               {places.map((item, index) => (
                 <tr key={item.storeName}>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-4 whitespace-normal">
                     <div className="text-sm text-gray-900">{index + 1}</div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-4">
                     <a href={item.googleUrl} target="_blank" rel="noreferrer">
-                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                      <span className="inline-block text-sm leading-5 font-semibold bg-green-100 text-green-800 whitespace-normal px-2 py-1">
                         {item.storeName}
                       </span>
                     </a>
@@ -81,10 +87,13 @@ const Table: React.FC<TableProps> = ({ places }) => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">🌟 {item.stars} </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-4 whitespace-normal">
                     <div className="text-sm text-gray-900">{item.numberOfReviews} ulasan</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">{item.phone}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-normal">
                     <div className="text-sm text-gray-900">{item.address}</div>
                   </td>
                  
