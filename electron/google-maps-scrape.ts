@@ -113,8 +113,6 @@ export default async function searchGoogleMaps(query: string): Promise<any[]> {
         .find("span.fontBodyMedium > span")
         .attr("aria-label");
 
-      const { stars, numberOfReviews } = extractRatingAndReviews(ratingText);
-
       // get the first div that includes the class fontBodyMedium
       const bodyDiv: any = parent.find("div.fontBodyMedium").first();
       const children: any = bodyDiv.children();
@@ -132,10 +130,8 @@ export default async function searchGoogleMaps(query: string): Promise<any[]> {
         phone: lastOfLast?.text()?.split("·")?.[1]?.trim(),
         googleUrl: url,
         bizWebsite: website,
-        stars,
-        numberOfReviews,
+        ratingText: ratingText
       });
-      console.log('>>>', business);
     });
     business.sort((a, b) => {
       if (a.stars && b.stars) {
@@ -152,19 +148,3 @@ export default async function searchGoogleMaps(query: string): Promise<any[]> {
   }
 }
 
-function extractRatingAndReviews(ratingText: string | undefined): { stars: number | null; numberOfReviews: number | null } {
-  if (!ratingText) {
-    return { stars: null, numberOfReviews: null };
-  }
-
-  const regex = /Bintang (\d+(?:,\d+)?) (\d+) Ulasan/;
-  const match = ratingText.match(regex);
-
-  if (match) {
-    const stars = parseFloat(match[1].replace(",", "."));
-    const numberOfReviews = parseInt(match[2]);
-    return { stars, numberOfReviews };
-  } else {
-    return { stars: null, numberOfReviews: null };
-  }
-}

@@ -3,7 +3,7 @@ import electron from "../assets/electron.svg.png";
 import viteLogo from "/electron-vite.animate.svg";
 import Table from "./Table";
 import Input from "./Input";
-import React, { useState, useEffect  } from "react";
+import { useState, useEffect  } from "react";
 
 function App() {
   const [results, setResults] = useState(null);
@@ -56,8 +56,10 @@ function App() {
             </a>
           </div>
 
-          <h1 className="text-3xl font-bold mb-4">Google Maps Scrapping</h1>
-          <h3 className="text-1xl mb-4">Electron + React + Vite</h3>
+          <h1 className="text-3xl font-bold mb-2">Google Maps Scrapping</h1>
+          <div className="text-center text-sm text-gray-500">
+            created by dewakoding.com
+          </div>
           
         </div>
       </div>
